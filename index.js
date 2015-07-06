@@ -9,8 +9,14 @@ var jsx = {
   register: function registerRenderer(name, config) {
     name = name.toLowerCase();
 
-    var interpreter = new Interpreter(name, config);
-    var renderer = new Renderer(interpreter);
+    var after = config.after;
+    var before = config.before;
+
+    var interpreter = new Interpreter(name, config.tags);
+    var renderer = new Renderer(interpreter, {
+      before: before,
+      after: after
+    });
 
     renderers[name] = renderer;
     return renderer;

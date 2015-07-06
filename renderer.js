@@ -1,12 +1,28 @@
 var isArray = Array.isArray;
 var hasOwn = Object.prototype.hasOwnProperty;
 
-function Renderer(interpreter) {
+function Renderer(interpreter, callbacks) {
+  this.callBefore = callbacks && callbacks.before || this.noop;
+  this.callAfter = callbacks && callbacks.after || this.noop;
+
   this.interpreter = interpreter;
 };
 
 Renderer.prototype = {
-  render: function parseJSX(thing) {
+  render: function renderJSX(tree) {
+    if (!tree) throw new Error('JSX tree is not presented');
+
+    if (!this.isPrimitive(tree) && !this.isTagDescriptor(tree)) {
+      throw new Error('Tree top level item should be tag or primitive value');
+    }
+
+    tree = this.callBefore(tree);
+    tree = this.renderChild(tree);
+    tree = this.callAfter(tree);
+
+    return tree;
+  },
+  renderChild: function(thing) {
     if (thing == null) {
       return null;
     }
@@ -52,11 +68,11 @@ Renderer.prototype = {
     var child;
 
     for (; i < length; i++) {
-      child = this.render(children[i]);
+      child = this.renderChild(children[i]);
 
       if (child) {
         // probably move this to handleTag() method
-        // and provide parentValue for render() call
+        // and provide parentValue for renderChild() call
         parent = this.interpreter.child(tag, parent, child);
       }
     }
@@ -80,7 +96,9 @@ Renderer.prototype = {
   isTagDescriptor: function(object) {
     return object && typeof object === 'object' && 'tag' in object &&
       'props' in object && 'children' in object;
-  }
+  },
+
+  noop: function(a) { return a }
 };
 
 module.exports = Renderer;
