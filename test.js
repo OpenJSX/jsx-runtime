@@ -8,7 +8,7 @@ jsx.register('HTML', {
       return '<' + tag + props + '>';
     },
     leave: function(parent, tag) {
-      return parent + '\n</' + tag + '>';
+      return parent + '</' + tag + '>';
     },
     child: function(child, parent) {
       return parent + child;

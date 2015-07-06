@@ -3,23 +3,27 @@
 var Renderer = require('./renderer');
 var Interpreter = require('./interpreter');
 
-var interpreters = {};
+var renderers = {};
 
 var jsx = {
-  register: function registerInterpreter(name, config) {
+  register: function registerRenderer(name, config) {
     name = name.toLowerCase();
-    interpreters[name] = new Interpreter(name, config);
+
+    var interpreter = new Interpreter(name, config);
+    var renderer = new Renderer(interpreter);
+
+    renderers[name] = renderer;
+    return renderer;
   },
 
-  render: function renderJSXTree(tree, interpreter) {
-    interpreter = interpreter.toLowerCase();
-    interpreter = interpreter && interpreters[interpreter];
+  render: function renderJSXTree(tree, renderer) {
+    renderer = renderer.toLowerCase();
+    renderer = renderer && renderers[renderer];
 
-    if (!interpreter) {
-      throw new Error('Interpreter [' + interpreter + '] not found');
+    if (!renderer) {
+      throw new Error('Renderer [' + renderer + '] not found');
     }
 
-    var renderer = new Renderer(interpreter);
     return renderer.render(tree);
   }
 };
