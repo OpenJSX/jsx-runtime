@@ -129,7 +129,7 @@ Renderer.prototype = {
 };
 
 function isObject(obj) {
-  return typeof object === 'object' && obj && !isArray(obj);
+  return typeof obj === 'object' && obj && !isArray(obj);
 }
 
 module.exports = Renderer;
