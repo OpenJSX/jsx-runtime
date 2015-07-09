@@ -7,11 +7,10 @@ function Renderer(interpreter, callbacks) {
   this.callBefore = callbacks && callbacks.before || this.noop;
   this.callAfter = callbacks && callbacks.after || this.noop;
 
-  this.interpreter = interpreter;
-};
+  var _this = this;
 
-Renderer.prototype = {
-  render: function renderJSX(element, props, children) {
+  this.interpreter = interpreter;
+  this.render = function renderJSX(element, props, children) {
     if (!element) throw new Error('JSX element is not presented');
 
     if (typeof element === 'string') {
@@ -28,16 +27,19 @@ Renderer.prototype = {
       });
     }
 
-    if (!this.isTagDescriptor(element)) {
+    if (!_this.isTagDescriptor(element)) {
       throw new Error('Top level element should be a tag or function which returns a tag');
     }
 
-    element = this.callBefore(element);
-    element = this.renderChild(element);
-    element = this.callAfter(element);
+    element = _this.callBefore(element);
+    element = _this.renderChild(element);
+    element = _this.callAfter(element);
 
     return element;
-  },
+  };
+};
+
+Renderer.prototype = {
   renderChild: function(thing) {
     if (typeof thing === 'function') {
       thing = thing();
