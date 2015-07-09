@@ -16,14 +16,14 @@ function Renderer(interpreter, callbacks) {
     if (typeof element === 'string') {
       element = {
         tag: element,
-        props: props,
-        children: children
+        props: isObject(props) ? props : null,
+        children: Array.isArray(children) ? children : null
       };
     } else if (typeof element === 'function') {
       element = element({
         tag: element.name || element.displayName || '',
-        props: props,
-        children: children
+        props: isObject(props) ? props : null,
+        children: Array.isArray(children) ? children : null
       });
     }
 
@@ -127,5 +127,9 @@ Renderer.prototype = {
 
   noop: function(a) { return a }
 };
+
+function isObject(obj) {
+  return typeof object === 'object' && obj && !isArray(obj);
+}
 
 module.exports = Renderer;
