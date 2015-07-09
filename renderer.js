@@ -1,6 +1,8 @@
 var isArray = Array.isArray;
 var hasOwn = Object.prototype.hasOwnProperty;
 
+var MAX_ARRAY_DEPTH = 3;
+
 function Renderer(interpreter, callbacks) {
   this.callBefore = callbacks && callbacks.before || this.noop;
   this.callAfter = callbacks && callbacks.after || this.noop;
@@ -12,8 +14,8 @@ Renderer.prototype = {
   render: function renderJSX(tree) {
     if (!tree) throw new Error('JSX tree is not presented');
 
-    if (!this.isPrimitive(tree) && !this.isTagDescriptor(tree)) {
-      throw new Error('Tree top level item should be tag or primitive value');
+    if (!this.isTagDescriptor(tree)) {
+      throw new Error('Tree top level item should be a tag');
     }
 
     tree = this.callBefore(tree);
@@ -31,15 +33,26 @@ Renderer.prototype = {
       return this.handleTag(thing);
     }
 
-    if (isArray(thing)) {
-      // handle this if returning multiple elements will be supported
-    }
+    return thing;
+  },
+  walkChildren: function(children, handler, depth) {
+    var length = children.length;
+    var i = 0;
+    var child;
 
-    if (this.isPrimitive(thing)) {
-      return this.handlePrivimite(thing);
-    }
+    depth = depth | 0;
 
-    throw new Error('Wrong value for JSX tree');
+    for (; i < length; i++) {
+      child = children[i];
+
+      if (child == null) continue;
+      if (isArray(child) && depth < MAX_ARRAY_DEPTH) {
+        this.walkChildren(child, handler);
+        continue;
+      }
+
+      handler(this.renderChild(child));
+    }
   },
 
   handleTag: function(descriptor) {
@@ -63,19 +76,13 @@ Renderer.prototype = {
   },
 
   handleChildren: function(tag, children, parent) {
-    var length = children.length;
-    var i = 0;
-    var child;
+    var self = this;
 
-    for (; i < length; i++) {
-      child = this.renderChild(children[i]);
-
-      if (child) {
-        // probably move this to handleTag() method
-        // and provide parentValue for renderChild() call
-        parent = this.interpreter.child(tag, parent, child);
-      }
-    }
+    this.walkChildren(children, function(child) {
+      // probably move this to handleTag() method
+      // and provide parentValue for renderChild() call
+      parent = self.interpreter.child(tag, parent, child);
+    });
 
     return parent;
   },
