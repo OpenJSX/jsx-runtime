@@ -11,20 +11,38 @@ function Renderer(interpreter, callbacks) {
 };
 
 Renderer.prototype = {
-  render: function renderJSX(tree) {
-    if (!tree) throw new Error('JSX tree is not presented');
+  render: function renderJSX(element, props, children) {
+    if (!element) throw new Error('JSX element is not presented');
 
-    if (!this.isTagDescriptor(tree)) {
-      throw new Error('Tree top level item should be a tag');
+    if (typeof element === 'string') {
+      element = {
+        tag: element,
+        props: props,
+        children: children
+      };
+    } else if (typeof element === 'function') {
+      element = element({
+        tag: element.name || element.displayName || '',
+        props: props,
+        children: children
+      });
     }
 
-    tree = this.callBefore(tree);
-    tree = this.renderChild(tree);
-    tree = this.callAfter(tree);
+    if (!this.isTagDescriptor(element)) {
+      throw new Error('Top level element should be a tag or function which returns a tag');
+    }
 
-    return tree;
+    element = this.callBefore(element);
+    element = this.renderChild(element);
+    element = this.callAfter(element);
+
+    return element;
   },
   renderChild: function(thing) {
+    if (typeof thing === 'function') {
+      thing = thing();
+    }
+
     if (thing == null) {
       return null;
     }
