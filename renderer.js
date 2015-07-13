@@ -21,7 +21,7 @@ function Renderer(interpreter, callbacks) {
       };
     } else if (typeof element === 'function') {
       element = element({
-        tag: element.name || element.displayName || '',
+        tag: [element.name || element.displayName || '', element],
         props: isObject(props) ? props : null,
         children: Array.isArray(children) ? children : null
       });
@@ -41,10 +41,6 @@ function Renderer(interpreter, callbacks) {
 
 Renderer.prototype = {
   renderChild: function(thing) {
-    if (typeof thing === 'function') {
-      thing = thing();
-    }
-
     if (thing == null) {
       return null;
     }
@@ -76,10 +72,26 @@ Renderer.prototype = {
   },
 
   handleTag: function(descriptor) {
-    var tag = descriptor.tag + '';
+    var tag = descriptor.tag;
     var props = descriptor.props;
     var children = descriptor.children;
     var parent;
+    var tagFunction;
+
+    if (isArray(tag)) {
+      tagFunction = tag[1];
+      tag = tag[0];
+
+      var child;
+
+      if (this.interpreter.hasCustomOverride()) {
+        child = this.interpreter.custom(tag, tagFunction, props, children);
+      } else {
+        child = tagFunction(props, children, tag);
+      }
+
+      return this.renderChild(child);
+    }
 
     // Put children handling here if bottom-to-top handling is better
 
