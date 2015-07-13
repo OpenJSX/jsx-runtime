@@ -1,6 +1,6 @@
 {
   "name": "jsx-runtime",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "JSX IR Runtime",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "repository": "jsx-ir/jsx-runtime",
   "devDependencies": {
     "babel-core": "^5.6.19",
-    "babel-plugin-jsx": "^1.0.1",
+    "babel-plugin-jsx": "^1.1.0",
     "mocha": "^2.2.5"
   }
 }
