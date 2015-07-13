@@ -1,7 +1,7 @@
 "use strict";
 
-var Renderer = require('./renderer');
-var Interpreter = require('./interpreter');
+var Renderer = require('./lib/renderer');
+var Interpreter = require('./lib/interpreter');
 
 var renderers = {};
 

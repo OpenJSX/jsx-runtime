@@ -8,5 +8,8 @@
   },
   "author": "Arthur Stolyar <nekr.fabula@gmail.com>",
   "license": "MIT",
-  "repository": "jsx-ir/jsx-runtime"
+  "repository": "jsx-ir/jsx-runtime",
+  "devDependencies": {
+    "mocha": "^2.2.5"
+  }
 }
