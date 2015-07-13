@@ -4,7 +4,7 @@
   "description": "JSX IR Runtime",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha tests/unit.js"
   },
   "author": "Arthur Stolyar <nekr.fabula@gmail.com>",
   "license": "MIT",
