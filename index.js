@@ -1,21 +1,20 @@
 "use strict";
 
 var Renderer = require('./lib/renderer');
-var Interpreter = require('./lib/interpreter');
+"use strict";
 
+var Interpreter = require('./lib/interpreter');
 var renderers = {};
 
 var jsx = {
   register: function registerRenderer(name, config) {
     name = name.toLowerCase();
 
-    var after = config.after;
-    var before = config.before;
-
     var interpreter = new Interpreter(name, config.tags);
     var renderer = new Renderer(interpreter, {
-      before: before,
-      after: after
+      before: config.before,
+      after: config.after,
+      process: config.process
     });
 
     renderers[name] = renderer;
