@@ -1,3 +1,5 @@
+~placement for build badge~
+
 ## JSX IR Runtime
 
 Runtime for rendering JSX-IR. Runtime does not renders JSX-IR, otherwise it provides common interfaces for Renderer to be implemented.
