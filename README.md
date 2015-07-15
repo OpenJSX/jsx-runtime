@@ -1,4 +1,4 @@
-~placement for build badge~
+[![Build Status](https://travis-ci.org/jsx-ir/jsx-runtime.svg?branch=master)](https://travis-ci.org/jsx-ir/jsx-runtime)
 
 ## JSX IR Runtime
 
