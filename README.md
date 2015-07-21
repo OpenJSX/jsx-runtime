@@ -91,7 +91,7 @@ interface TagHandler {
 
   // [optional]
   // If present, is called with JSX.Child of JSX.Element's children.
-  // Return new value for child
+  // Return new value for parent
   child?: (child: JSX.Child, parent: any, tag: string) => any;
 
   // This is mandatory signal. Takes tag name of currently handled tag,
