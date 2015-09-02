@@ -32,13 +32,18 @@ var jsx = {
     return renderer.render(tree);
   },
 
-  override: function override(config, target) {
+  override: function override(config, target, weight) {
     if (!target) target = '*';
 
     var interpreter = new Interpreter(config);
 
+    // Do not allow custom overrides to have 0 weight
+    if (!weight || !isFinite(weight)) {
+      weight = 1;
+    }
+
     overrides.register(target, interpreter, {
-      weight: 1
+      weight: weight
     });
   }
 };
