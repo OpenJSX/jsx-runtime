@@ -11,7 +11,7 @@ var jsx = {
     name = name.toLowerCase();
 
     var interpreter = new Interpreter(config);
-    var renderer = new Renderer(overrides.get(name));
+    var renderer = new Renderer(overrides.get(name), config.renderType);
 
     overrides.register(name, interpreter, {
       weight: 0
