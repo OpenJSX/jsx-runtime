@@ -6,7 +6,6 @@ var jsx = require('babel-plugin-jsx/gen');
 var Module = require('module');
 
 var testsFolder = path.join(__dirname, 'unit');
-var dir = fs.readdirSync(testsFolder);
 
 var plugin = jsx({
   captureScope: true
@@ -14,27 +13,47 @@ var plugin = jsx({
 
 var modulePaths = module.paths;
 
-describe('unit', function() {
-  dir.forEach(function(fileName) {
-    var filePath = path.join(testsFolder, fileName);
-    var file = fs.readFileSync(filePath, 'utf-8');
+testDir(testsFolder);
 
-    testFile(file, filePath, fileName);
+function testDir(dirPath) {
+  var dir = fs.readdirSync(dirPath);
+  var dirName = path.basename(dirPath);
 
-    function testFile(file, filePath, fileName) {
-      var result = babel.transform(file, {
-        plugins: [plugin],
-        blacklist: ['react']
-      });
+  describe(dirName, function() {
+    dir.forEach(function(entryName) {
+      var entryPath = path.join(dirPath, entryName);
+      var stats = fs.statSync(entryPath);
 
-      var mod = requireString(result.code, filePath, fileName);
-
-      if (mod.test) {
-        it(fileName, mod.test);
+      if (stats.isDirectory()) {
+        testDir(entryPath);
+      } else if (stats.isFile()) {
+        testFile(entryPath, entryName);
+      } else {
+        throw new Error('Not supported FS entry');
       }
-    }
+    });
   });
-});
+}
+
+function testFile(filePath, fileName) {
+  var file = fs.readFileSync(filePath, 'utf-8');
+  var result = babel.transform(file, {
+    plugins: [plugin],
+    blacklist: ['react']
+  });
+
+  var mod = requireString(result.code, filePath, fileName);
+
+  if (mod.tests) {
+    context(fileName, function() {
+      Object.keys(mod.tests).forEach(function(key) {
+        it(key, mod.tests[key]);
+      });
+    });
+  } else if (mod.test) {
+    it(fileName, mod.test);
+  }
+}
 
 function requireString(src, filePath, fileName) {
   var module = new Module(fileName);

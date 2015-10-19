@@ -1,4 +1,4 @@
-var render = require('../_unwrap-renderer.js').render;
+var render = require('../../_unwrap-renderer.js').render;
 var assert = require('assert');
 
 function Wrap(props, children) {
@@ -11,15 +11,14 @@ export var test = () => {
   let props = {
     Test: 1,
     test: '2',
-    _test: true,
-    before: {}
+    _test: true
   };
 
   let wrapped = render(
-    <Wrap before="1" { ... props }></Wrap>
+    <Wrap { ... props } after="1"></Wrap>
   );
 
-  let unwrapped = <div Test={ 1 } test="2" _test={ true } before={ {} }></div>
+  let unwrapped = <div Test={ 1 } test="2" _test={ true } after="1"></div>
 
   return assert.deepEqual(unwrapped, wrapped);
 }

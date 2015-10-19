@@ -1,6 +1,22 @@
 var jsx = require('../');
 
 var renderer = jsx.register('jsx-unwrap', {
+  fragment: function() {
+    return {
+      tag: '#fragment',
+      props: null,
+      children: []
+    };
+  },
+
+  renderTo: function(target, element) {
+    if (element.tag === '#fragment') {
+      target.children = element.children;
+    } else {
+      target.children = [element];
+    }
+  },
+
   tags: {
     '*': {
       enter: function(tag, props) {
@@ -19,7 +35,7 @@ var renderer = jsx.register('jsx-unwrap', {
       },
       child: function(child, parent) {
         parent.children.push(child);
-        return parent;
+        return child;
       }
     }
   }

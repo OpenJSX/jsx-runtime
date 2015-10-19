@@ -1,4 +1,4 @@
-var render = require('../_unwrap-renderer.js').render;
+var render = require('../../_unwrap-renderer.js').render;
 var assert = require('assert');
 
 function Wrap(props, children) {
