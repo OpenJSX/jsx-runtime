@@ -1,8 +1,8 @@
-var renderTo = require('../../_unwrap-renderer.js').renderTo;
-var assert = require('assert');
+import { renderTo } from '../../_unwrap-renderer.js';
+import assert from 'assert';
 
 export var tests = {
-  'fragment': function() {
+  'render fragment'() {
     var target = <div />;
     var result = <div>
       <span />
@@ -14,7 +14,7 @@ export var tests = {
 
     return assert.deepEqual(target, result);
   },
-  'single': function() {
+  'render single element'() {
     var target = <div />;
     var result = <div>
       <span>test</span>

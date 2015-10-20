@@ -4,11 +4,15 @@ var Renderer = require('./lib/renderer');
 var Interpreter = require('./lib/interpreter');
 var overrides = require('./lib/overrides');
 
-var renderers = {};
+var renderers = Object.create(null);
 
 var jsx = {
-  register: function registerRenderer(name, config) {
+  register: function register(name, config) {
     name = name.toLowerCase();
+
+    if (renderers[name]) {
+      throw new Error('Renderer [' + name + '] already exists');
+    }
 
     var weight = 0;
     var interpreter = new Interpreter(config, weight);
@@ -37,7 +41,12 @@ var jsx = {
     });
   },
 
-  Stream: function() {},
+  _remove: function remove(name) {
+    overrides.clear(name, renderers[name]);
+    renderers[name] = null;
+  },
+
+  Stream: function Stream() {},
   Renderer: Renderer,
   Interpreter: Interpreter
 };
